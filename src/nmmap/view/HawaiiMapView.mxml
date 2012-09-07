@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mq="com.mapquest.tilemap.*"
+		 xmlns:flex="com.mapquest.tilemap.controls.flex.*"
+		 width="400" height="300"
+		 creationComplete="_creationCompleteHandler(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.mapquest.LatLng;
+			import com.mapquest.tilemap.ShapeCollection;
+			import com.mapquest.tilemap.pois.MapIcon;
+			import com.mapquest.tilemap.pois.Poi;
+			
+			import mx.events.FlexEvent;
+			
+			import nmmap.events.ContentWindowEvent;
+			import nmmap.vo.StoreVO;
+			
+			[Embed ("nmmap/images/red-pin.png")]
+			private var red:Class;			
+			[Embed ("nmmap/images/yellow-pin.png")]
+			private var yellow:Class;
+			[Embed ("nmmap/images/green-pin.png")]
+			private var green:Class;
+			
+			
+			public function goToStartView():void
+			{
+				hawaiiMap.tileMap.showMobileCursor = true;
+				hawaiiMap.setCenter(new LatLng(21.18, -157.51));
+				hawaiiMap.zoom = 6;
+			}
+			
+			
+			private function _creationCompleteHandler(event:FlexEvent):void
+			{
+				hawaiiMap.tileMap.showMobileCursor = true;
+				hawaiiMap.setCenter(new LatLng(21.18, -157.51));				
+				
+			}
+			
+			private var _coordinates:Array = [];
+			public function setCoordinates(value:Array):void
+			{
+				_coordinates = value;
+				
+			}
+			
+			private var _storeInformation:Array = [];
+			public function setLocationInformation(value:Array):void
+			{
+				_storeInformation = value;
+			}
+			
+			private var _childPoiColl:ShapeCollection = new ShapeCollection;
+			public function mapLocationData():void
+			{
+				var length:int = _storeInformation.length;
+				var poi:Poi;
+				var storeInfo:StoreVO;
+				
+				
+				for (var i:int=0; i<length; i++)
+				{
+					storeInfo = _storeInformation[i];
+					poi = new Poi(_coordinates[i]);
+					
+					poi.rolloverAndInfoTitleText = storeInfo.storeName;
+					
+					//Use key parameter to determine which poi is clicked
+					poi.key = i + "";
+					//use label parameter for filttering pois
+					poi.label = storeInfo.subBusinessUnitCode;
+					poi.labelVisible = false;
+					
+					//add event listener for each poi
+//					poi.addEventListener(MouseEvent.CLICK, onChildPoiClickHandler);
+					
+					
+					poi.icon = generatePOIIcon(storeInfo);
+					// set offset for custom icon
+					poi.icon.anchorOffset = new Point(-24,-40);
+					
+					// _childPoi is the shapecollection for the child poi's, add poi's to the shapeCollection
+					_childPoiColl.add(poi);
+					
+					//add pois to the map
+					hawaiiMap.addShapeCollection(_childPoiColl);
+				}
+				
+				
+			}
+			private function generatePOIIcon(store:StoreVO):MapIcon
+			{
+				// set Icon based on store.subBusinessUnitCode
+				// C, P, R
+				//create new icons
+				var yellowPin:MapIcon = new MapIcon();
+				var redPin:MapIcon = new MapIcon();
+				var greenPin:MapIcon = new MapIcon();
+				yellowPin.setImage(new yellow(), 48, 48);
+				redPin.setImage(new red(), 48, 48);
+				greenPin.setImage(new green(), 48, 48);
+				
+				if(store.subBusinessUnitCode == 'C')
+				{
+					return yellowPin;
+				}
+				else if(store.subBusinessUnitCode == 'R')
+				{
+					return greenPin;
+				}
+				else
+				{
+					return redPin;
+				} 
+				
+			}
+			
+			private var poiClicked:Array = [];
+			
+			private function onChildPoiClickHandler(event:MouseEvent):void
+			{
+				var index:int = event.currentTarget.key;
+				var storeInfo:StoreVO = _storeInformation[index];
+				var point:Point = new Point(this.mouseX, this.mouseY);
+				
+				storeInfo.key = index;
+				
+				if(poiClicked[index])
+					dispatchEvent(new ContentWindowEvent(ContentWindowEvent.REFRESH_CONTENT_WINDOW, storeInfo, point));
+				else
+					dispatchEvent(new ContentWindowEvent(ContentWindowEvent.ADD_CONTENT_WINDOW, storeInfo, point));
+				
+				poiClicked[index] = true;
+			}
+			
+		]]>
+		
+	</fx:Script>
+	<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="#000000"/>
+			</s:fill>
+	</s:Rect>
+	<mq:TilemapComponent id="hawaiiMap" 
+						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
+						 width="100%" height="100%"
+						 left="5" right="5" bottom="5" top="5"
+						 zoom="6"/>
+
+</s:Group>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%" horizontalAlign="center" paddingTop="25" verticalAlign="middle">
+	
+	<fx:Script>
+
+		<![CDATA[
+			import nmmap.events.MapEvent;
+			
+
+			
+			protected function startView_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new MapEvent(MapEvent.START_VIEW));
+			}
+			
+			
+			
+			protected function zoomOut_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new MapEvent(MapEvent.ZOOM_OUT));				
+			}
+			
+			protected function zoomIn_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new MapEvent(MapEvent.ZOOM_IN));				
+				
+			}
+			
+		]]>
+	
+	</fx:Script>
+	<s:Button id="zoomOut" 
+			  label="-"
+			  click="zoomOut_clickHandler(event)"/>
+	
+	<s:Button id="startView" width="100" height="50" label="Start View" chromeColor="#000000"
+			  click="startView_clickHandler(event)" color="#FFFFFF" fontSize="15" fontWeight="bold"/>
+	
+	<s:Button id="zoomIn" 
+			  label="+"
+			  click="zoomIn_clickHandler(event)"/>
+
+	
+</s:HGroup>

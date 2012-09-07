@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:nmmap="nmmap.*"
+					   xmlns:view="nmmap.view.*"
+					   xmlns:mq="com.mapquest.tilemap.*"
+					   addedToStage="addedToStageHandler()">
+	
+	
+	<fx:Declarations>
+		<nmmap:MapContext contextView="{this}"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.mapquest.LatLng;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import nmmap.events.ContentWindowEvent;
+			import nmmap.view.DraggableTitleWindow;
+			import nmmap.view.MapView;
+			import nmmap.vo.StoreVO;
+			
+			private var _pop:Array=[];
+			
+			
+			private var _xPoistion:int;
+			private var _yPoistion:int;
+			
+			
+			
+			protected function addedToStageHandler():void
+			{
+				this.stage.displayState = StageDisplayState.FULL_SCREEN;
+				
+				if (Multitouch.supportedGestures)
+				{
+					trace('Multitouch supported');
+					for (var index:int=0; index<Multitouch.supportedGestures.length; index++)
+					{
+						trace(' supports', Multitouch.supportedGestures[index]);
+					}
+				} else {
+					trace('Multitouch not supported');
+				}
+				
+				Multitouch.inputMode = MultitouchInputMode.GESTURE;
+				
+				// Transform Listeners
+				
+				stage.addEventListener(TransformGestureEvent.GESTURE_ZOOM,
+					eventHandler);
+//				
+//				stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE,
+//					eventHandler);
+//				
+//				stage.addEventListener(TransformGestureEvent.GESTURE_PAN,
+//					eventHandler);
+//				
+//				stage.addEventListener(TransformGestureEvent.GESTURE_ROTATE,
+//					eventHandler);
+			}
+			
+			protected function eventHandler(event:TransformGestureEvent) :
+				void
+			{
+				trace( event.toString() );
+			}
+
+			
+			
+			public function addContentWindow(storeInfo:StoreVO, xPosition:int, yPosition:int):void
+			{
+				var index:int = storeInfo.key;
+				var popUp:DraggableTitleWindow = new DraggableTitleWindow;
+				popUp = PopUpManager.createPopUp(this, DraggableTitleWindow) as DraggableTitleWindow;
+				
+				popUp.setStoreName(storeInfo.storeName);
+				popUp.putContent(storeInfo);
+				
+				popUp.x = xPosition+30;
+				popUp.y = yPosition-100;
+				
+				PopUpManager.addPopUp(popUp, this);
+				//				PopUpManager.centerPopUp(popUp);
+				
+				
+				popUp.addEventListener(CloseEvent.CLOSE, pop_closeHandler);
+				
+				_pop[index] = popUp;
+				
+				popUp.popUpIndex = index;
+			}
+			
+			public function refreshContentWindow(storeInfo:StoreVO, xPosition:int, yPosition:int):void
+			{
+				var index:int = storeInfo.key;
+				PopUpManager.bringToFront(_pop[index]);
+			}
+			
+			protected function pop_closeHandler(event:CloseEvent):void
+			{
+//				var popUp:IFlexDisplayObject = event.currentTarget as IFlexDisplayObject;
+				var popUp:DraggableTitleWindow = event.currentTarget as DraggableTitleWindow;
+				var index:int = popUp.popUpIndex;
+				
+				if (popUp != null)
+				{
+					PopUpManager.removePopUp(popUp);
+					dispatchEvent(new ContentWindowEvent(ContentWindowEvent.WINDOW_CLOSED, null, null, index));
+				}
+			}
+			
+			protected function myMapView_clickHandler(event:MouseEvent):void
+			{
+				trace("myMapView Clicked"+event.localX+" "+event.localY+ "mouse "+this.mouseX+" "+this.mouseY);
+				
+			}
+			
+			protected function mainView_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				//				trace("mainView Clicked"+event.localX+" "+event.localY+ "stage "+event.stageX+" "+event.stageY);
+				/* 				var length:int = _pop.length;
+				if(index>3)
+				{
+				for(var i:int = 0; i<length; i++) 
+				{
+				PopUpManager.removePopUp(_pop[i]);
+				}
+				index = 0;
+				} */
+			}
+			
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group id="mainView" 
+			 width="100%" height="100%"
+			 x="0" y="0"
+			 click="mainView_clickHandler(event)">
+		<view:MapView id="myMapView" />
+		<view:HawaiiMapView id="hawaii"
+							x="50" y="700"/>
+		<view:MapButton id="myMapButton"/>
+		<view:Legend id="myLegend"/>
+		<!--<view:ContentWindow id="myContentWindow"/>-->
+
+	</s:Group>
+	
+	
+</s:WindowedApplication>

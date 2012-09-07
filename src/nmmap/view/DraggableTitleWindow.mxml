@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   x="0" y="0" width="400" height="300" 
+			   name="myWindow" 
+			   title="my title">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.TextArea;
+			
+			import nmmap.vo.StoreVO;
+			
+			
+			//red:chromeColor="#FF6A6A" green: "05E900" yellow:"fcff02"
+			private var _popUpIndex:int;
+			
+			
+			
+			
+			public function get popUpIndex():int
+			{
+				return _popUpIndex;
+			}
+
+			public function set popUpIndex(value:int):void
+			{
+				_popUpIndex = value;
+			}
+
+			public function setStoreName(storeName:String):void
+			{
+				this.title = storeName;
+								
+			}
+			
+			public function putContent(storeInfo:StoreVO):void
+			{
+				var textArea:TextArea = new TextArea();
+				var address:String = storeInfo.street1+" "+storeInfo.street2+"\n"+storeInfo.city+", "+storeInfo.state+" "+storeInfo.postalCode;
+				textArea.percentWidth = 100;
+				textArea.percentHeight = 100;
+				textArea.text = address;
+				textArea.editable = false;
+				
+				var subCode:String = storeInfo.subBusinessUnitCode;
+				
+				this.setStyle("chromeColor","#FF6A6A");
+ 				trace("busunitcode is "+subCode)
+				switch (subCode)
+				{
+					case "R": this.setStyle("chromeColor","#1EFF00"); break;
+					case "P": this.setStyle("chromeColor","#FF0000"); break;
+					case "C": this.setStyle("chromeColor","#FFF600"); break;
+					default: return ;
+				}
+ 				
+				
+				this.addElement(textArea);
+			}
+			public function setPoistion(xPosition:int=NaN, yPosition:int=NaN):void
+			{
+				this.x = xPosition;
+				this.y = yPosition;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</s:TitleWindow>

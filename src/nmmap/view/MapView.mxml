@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mq="com.mapquest.tilemap.*"
+		 xmlns:flex="com.mapquest.tilemap.controls.flex.*"
+		 width="100%" height="100%"
+		 creationComplete="_creationCompleteHandler(event)">
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.mapquest.*;
+			import com.mapquest.services.geocode.*;
+			import com.mapquest.tilemap.ShapeCollection;
+			import com.mapquest.tilemap.TileMap;
+			import com.mapquest.tilemap.TileMapEvent;
+			import com.mapquest.tilemap.ZoomSettings;
+			import com.mapquest.tilemap.controls.inputdevice.*;
+			import com.mapquest.tilemap.controls.shadymeadow.*;
+			import com.mapquest.tilemap.pois.*;
+			
+			import mx.events.FlexEvent;
+			
+			import nmmap.events.ContentWindowEvent;
+			import nmmap.events.LegendEvent;
+			import nmmap.events.RequestStoreInformationDataEvent;
+			import nmmap.vo.StoreVO;
+			
+			import spark.components.*;
+
+			
+			[Embed ("nmmap/images/red-pin.png")]
+			private var red:Class;			
+			[Embed ("nmmap/images/yellow-pin.png")]
+			private var yellow:Class;
+			[Embed ("nmmap/images/green-pin.png")]
+			private var green:Class;
+			
+			
+			private var _masterPoi:Poi = new Poi(new LatLng(33,-96.8), new StarMapIcon(35, 0x123456));
+			private var _childPoiColl:ShapeCollection = new ShapeCollection;
+			private var _masterPoiColl:ShapeCollection = new ShapeCollection;
+			
+			//create a ClusterDeclutter object
+			private var _deClutter:IDeclutter;
+			
+			//create a leaderlines object
+			private var _leaderLine:LeaderLines = new LeaderLines();
+			
+			public function goToStartView():void
+			{
+				statesMap.setCenter(new LatLng(35.283, -97.3058));
+				statesMap.zoom = 5;
+			}
+			private function _creationCompleteHandler(event:FlexEvent):void
+			{
+				//add controls to the map
+//				myMap.addControl(new SMLargeZoomControl());
+//				myMap.addControl(new SMViewControl);
+				
+				statesMap.addControl(new MouseWheelZoomControl());
+				statesMap.addControl(new KeyboardControl());
+				
+				statesMap.tileMap.showMobileCursor = true;
+				//setting center based on master poi				
+				statesMap.setCenter(new LatLng(35.283, -97.3058));
+				
+				
+				
+				
+				//add a leader line object so we can change the properties of the leader lines
+				statesMap.leaderLines = _leaderLine;
+				_leaderLine.lineColor = 0x0066FF;
+				
+				
+//				_deClutter = new CircleDeclutter(); //new ForceDeclutter();
+				//turn on declutter mode
+//				myMap.declutter = _deClutter;
+				
+/* master poi				
+				//initialize master poi
+				_masterPoi = new Poi(new LatLng(33,-96.8));
+				_masterPoi.rolloverAndInfoTitleText = "master";
+				_masterPoiColl.add(_masterPoi);
+				myMap.addShapeCollection(_masterPoiColl);
+				
+				
+				//initialize master poi's icon
+				var redPin:MapIcon = new MapIcon();
+				redPin.setImage(new red(), 48, 48);
+				_masterPoi.icon = redPin;
+				_masterPoi.altIcon = redPin;
+
+				//add events
+				_masterPoi.addEventListener(MouseEvent.CLICK, onMasterPoiClickHandler);
+ 				myMap.addEventListener(TileMapEvent.ZOOM_END, zoomHandler);
+*/				
+
+				
+				
+				statesMap.tileMap.usePinchZoom = true;
+				return;
+				
+				Multitouch.inputMode = MultitouchInputMode.GESTURE;
+
+				
+				
+				
+//				myMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onTransformGestureZoom);
+//				myMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
+
+				trace(_storeInformation);
+			}			
+			
+			
+ 			private function onZoom(event:TransformGestureEvent):void
+			{
+				
+				_centerLatLng = statesMap.center;
+				trace("outside else mapX and eventX " + statesMap.tileMap.scaleX + " "+ event.scaleX + " mapY and eventY " + statesMap.tileMap.scaleY + " "+ event.scaleY);
+				
+				if (event.phase == "begin") 
+				{
+					_touchPoint = this.globalToLocal(new Point(event.stageX, event.stageY));
+				}
+				if (event.phase == "update")
+				{					
+					if(statesMap.tileMap.scaleX*event.scaleX < 0.7 || statesMap.scaleX*event.scaleX > 1.08)
+					{
+					}
+					else
+					{
+						statesMap.tileMap.scaleX *= event.scaleX;
+						statesMap.tileMap.scaleY *= event.scaleY;
+						
+						trace(statesMap.tileMap.zoom);
+						
+						trace("inside else mapX and eventX " + statesMap.tileMap.scaleX + " "+ event.scaleX + " mapY and eventY " + statesMap.tileMap.scaleY + " "+ event.scaleY);
+					}
+					if(statesMap.tileMap.scaleX < 1)
+						_isPinching = true;
+					if(statesMap.tileMap.scaleX > 1)
+						_isPinching = false;
+				}
+				if (event.phase == "end") 
+				{
+					if(_isPinching)
+						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel - statesMap.tileMap.scaleX);
+					else
+						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel + statesMap.tileMap.scaleX);
+//						myMap.setCenter(myMap.pixToLL(_touchPoint), myMap.zoomLevel + myMap.tileMap.scaleX);
+					
+					
+					statesMap.tileMap.scaleX = 1;
+					statesMap.tileMap.scaleY = 1;
+				}
+			}
+ 
+			
+			private var _isPinching:Boolean;
+			private var _centerLatLng:LatLng;
+			private var _touchPoint:Point;
+			
+
+			
+
+			private function transformShapeLayers():void 
+			{
+//				this._poiSprite.z = this._tileSprite.z;
+//				this._shadowLayer.z = this._tileSprite.z;
+//				this._shapeSprite.z = this._tileSprite.z;
+			}
+			
+			
+			
+			
+			
+			
+			private var _coordinates:Array = [];
+			public function setCoordinates(value:Array):void
+			{
+				_coordinates = value;
+				
+			}
+			
+			private var _storeInformation:Array = [];
+			public function setLocationInformation(value:Array):void
+			{
+				_storeInformation = value;
+			}
+			
+			public function mapLocationData():void
+			{
+				var length:int = _storeInformation.length;
+				var poi:Poi;
+				var storeInfo:StoreVO;
+
+				
+					
+					
+					
+					
+				
+				for (var i:int=0; i<length; i++)
+				{
+					storeInfo = _storeInformation[i];
+					
+					
+//					trace("new StoreVO(\""+storeInfo.abbrevCombine+"\", \""+storeInfo.businessUnitCode+"\", \""+storeInfo.city+"\", \""+storeInfo.country+"\","+storeInfo.key+","+storeInfo.latitude+", new LatLng("+storeInfo.latLng+"),"+storeInfo.longitude+","+storeInfo.postalCode+", \""+storeInfo.state+"\", \""+storeInfo.storeName+"\","+storeInfo.storeNumber+", \""+storeInfo.street1+"\", \""+storeInfo.street2+"\", \""+storeInfo.subBusinessUnitCode+"\", \""+storeInfo.subBusinessUnitDesc+"\"),");
+					
+					
+					
+					
+					
+					
+					poi = new Poi(_coordinates[i]);
+					
+					poi.rolloverAndInfoTitleText = storeInfo.storeName;
+
+					//Use key parameter to determine which poi is clicked
+					poi.key = i + "";
+					//use label parameter for filttering pois
+					poi.label = storeInfo.subBusinessUnitCode;
+					poi.labelVisible = false;
+					
+ 					//add event listener for each poi
+					poi.addEventListener(MouseEvent.CLICK, onChildPoiClickHandler);
+					
+					
+					poi.icon = generatePOIIcon(storeInfo);
+					// set offset for custom icon
+					poi.icon.anchorOffset = new Point(-24,-40);
+					
+					// _childPoi is the shapecollection for the child poi's, add poi's to the shapeCollection
+					_childPoiColl.add(poi);
+					
+					//add pois to the map
+					statesMap.addShapeCollection(_childPoiColl);
+				}
+				
+				//add Event to show store numbers in the Legend View
+				dispatchEvent(new LegendEvent(LegendEvent.ADD_STORE_NUMBER, _storeInformation));
+			}
+			
+			private function generatePOIIcon(store:StoreVO):MapIcon
+			{
+				// set Icon based on store.subBusinessUnitCode
+				// C, P, R
+				//create new icons
+				var yellowPin:MapIcon = new MapIcon();
+				var redPin:MapIcon = new MapIcon();
+				var greenPin:MapIcon = new MapIcon();
+				yellowPin.setImage(new yellow(), 48, 48);
+				redPin.setImage(new red(), 48, 48);
+				greenPin.setImage(new green(), 48, 48);
+				
+				if(store.subBusinessUnitCode == 'C')
+				{
+					return yellowPin;
+				}
+				else if(store.subBusinessUnitCode == 'R')
+				{
+					return greenPin;
+				}
+				else
+				{
+					return redPin;
+				} 
+				
+			}
+			public function filterPoi():void
+			{
+				var length:int = _childPoiColl.length;
+				var poi:Poi;
+				for(var i:int = 0; i < length; i++)
+				{
+ 					poi = _childPoiColl.getShapeAtIndex(i) as Poi; 
+
+					if(poi.label == 'C')
+					{
+						trace("CCCCCCCCCC");					
+					}
+					if(poi.label == 'R')
+					{
+						trace("RRRRRRRR");					
+					}
+					if(poi.label == 'P')
+					{
+						trace("PPP");					
+					}
+				}
+			}
+
+			public function showRedPoi():void
+			{
+				var length:int = _childPoiColl.length;
+				var poi:Poi;
+				
+				for(var i:int = 0; i < length; i++)
+				{
+					poi = _childPoiColl.getShapeAtIndex(i) as Poi; 
+					
+					if(poi.label != 'P')
+						poi.visible = false;
+					else
+						poi.visible = true;
+				}
+			}
+			public function showYellowPoi():void
+			{
+				var length:int = _childPoiColl.length;
+				var poi:Poi;
+				
+				for(var i:int = 0; i < length; i++)
+				{
+					poi = _childPoiColl.getShapeAtIndex(i) as Poi; 
+					
+					if(poi.label != 'C')
+						poi.visible = false;
+					else
+						poi.visible = true;
+				}
+			}
+			public function showGreenPoi():void
+			{
+				var length:int = _childPoiColl.length;
+				var poi:Poi;
+				
+				for(var i:int = 0; i < length; i++)
+				{
+					poi = _childPoiColl.getShapeAtIndex(i) as Poi; 
+					
+					if(poi.label != 'R')
+						poi.visible = false;
+					else
+						poi.visible = true;
+				}
+			}
+			public function showAllPoi():void
+			{
+				var length:int = _childPoiColl.length;
+				var poi:Poi;
+				
+				for(var i:int = 0; i < length; i++)
+				{
+					poi = _childPoiColl.getShapeAtIndex(i) as Poi; 
+					
+					poi.visible = true;
+				}
+			}			
+			
+			public function customZoomIn():void
+			{
+				statesMap.zoomIn();
+			}
+			public function customZoomOut():void
+			{
+				statesMap.zoomOut();
+			}
+			
+			
+			
+			public function setBusyCursor():void
+			{
+				cursorManager.setBusyCursor();
+			}
+			
+			public function removeBusyCursor():void
+			{
+				cursorManager.removeBusyCursor();
+			}
+
+			
+			protected function onMasterPoiClickHandler(event:MouseEvent):void
+			{
+				statesMap.addShapeCollection(_childPoiColl);
+				statesMap.removeShape(_masterPoi);
+				statesMap.zoom = 6;
+				statesMap.setCenter(_masterPoi.latLng);
+			}
+			
+			protected function zoomHandler(event:TileMapEvent):void
+			{
+				if(event.zoom > 3)
+				{
+					statesMap.addShapeCollection(_childPoiColl);
+					statesMap.removeShapeCollection(_masterPoiColl);
+				}
+				else
+				{
+					statesMap.addShapeCollection(_masterPoiColl);
+					statesMap.removeShapeCollection(_childPoiColl);
+					
+				}
+			}
+			
+			
+			private var poiClicked:Array = [];
+			
+			private function onChildPoiClickHandler(event:MouseEvent):void
+			{
+				var index:int = event.currentTarget.key;
+				var storeInfo:StoreVO = _storeInformation[index];
+				var point:Point = new Point(this.mouseX, this.mouseY);
+				
+				storeInfo.key = index;
+				
+				if(poiClicked[index])
+					dispatchEvent(new ContentWindowEvent(ContentWindowEvent.REFRESH_CONTENT_WINDOW, storeInfo, point));
+				else
+					dispatchEvent(new ContentWindowEvent(ContentWindowEvent.ADD_CONTENT_WINDOW, storeInfo, point));
+				
+				poiClicked[index] = true;
+			}
+			public function contentWindowClosed(event:ContentWindowEvent):void
+			{
+				var index:int = event.index;
+				
+				poiClicked[index] = false;
+			}
+			
+			
+			protected function myMap_clickHandler(event:MouseEvent):void
+			{
+//				trace("myMapLL is " + myMap.tileMap.pixToLL(new Point(this.mouseX, this.mouseY)));
+//				trace("Handler X is " + this.mouseX + " " + this.mouseY);
+				
+			}
+			
+			protected function myMap_gestureTwoFingerTapHandler(event:GestureEvent):void
+			{
+				// TODO Auto-generated method stub
+				trace("myMap_gestureTwoFingerTapHandler");
+				statesMap.zoomIn();
+			}
+			
+			
+			
+			protected function statesMap_doubleClickHandler(event:MouseEvent):void
+			{
+				var clickPoint:LatLng;
+				clickPoint = statesMap.pixToLL(new Point(statesMap.mouseX, statesMap.mouseY));
+				statesMap.setCenter(clickPoint);
+				
+				
+				if(statesMap.zoom < 8)
+				{
+					while(statesMap.zoom < 8)
+						statesMap.zoomIn();
+				}
+				else if (statesMap.zoom < 13)
+				{
+					statesMap.zoomIn();
+				}
+				else
+					return;
+				
+			}
+			
+		]]>
+		
+	</fx:Script>
+	
+	<mq:TilemapComponent id="statesMap" 
+						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
+						 width="100%" height="100%"
+						 zoom="5"						
+						 x="0" y="0"
+						 doubleClick="statesMap_doubleClickHandler(event)"/>
+		
+<!-- 		
+		
+	<mq:TilemapComponent id="hawaiiMap" 
+						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
+						 width="250" height="250"
+						 x="50" y="800"
+						 zoom="5"/> -->
+	
+ 	
+	
+</s:Group>
