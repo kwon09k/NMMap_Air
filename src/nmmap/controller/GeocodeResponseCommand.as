@@ -12,7 +12,6 @@ package nmmap.controller
 	 */
 	
 	import nmmap.events.GeocodeServiceResponseEvent;
-	import nmmap.model.PoiModel;
 	import nmmap.model.StoreInformationModel;
 	
 	import org.robotlegs.mvcs.Command;

@@ -11,8 +11,6 @@ package nmmap.controller
 	 * 
 	 */
 	
-	import com.mapquest.services.geocode.GeocoderLocation;
-	
 	import nmmap.events.StoreInformationServiceResponseEvent;
 	import nmmap.model.StoreInformationModel;
 	

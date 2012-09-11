@@ -9,7 +9,7 @@ package nmmap.view
 	{
 		
 		[Inject]
-		public var view:Legend;
+		public var view:MapLegend;
 		
 		public function LegendMediator()
 		{

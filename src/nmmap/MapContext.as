@@ -17,11 +17,11 @@ package nmmap
 	import nmmap.services.StoreInformationService;
 	import nmmap.view.HawaiiMapView;
 	import nmmap.view.HawaiiMapViewMediator;
-	import nmmap.view.Legend;
 	import nmmap.view.LegendMediator;
 	import nmmap.view.MainViewMediator;
 	import nmmap.view.MapButton;
 	import nmmap.view.MapButtonMediator;
+	import nmmap.view.MapLegend;
 	import nmmap.view.MapView;
 	import nmmap.view.MapViewMediator;
 	
@@ -43,7 +43,7 @@ package nmmap
 			mediatorMap.mapView(NMMapAir, MainViewMediator);
 			mediatorMap.mapView(MapView, MapViewMediator);
 			mediatorMap.mapView(MapButton, MapButtonMediator);
-			mediatorMap.mapView(Legend, LegendMediator);
+			mediatorMap.mapView(MapLegend, LegendMediator);
 			mediatorMap.mapView(HawaiiMapView, HawaiiMapViewMediator);
 			
 			

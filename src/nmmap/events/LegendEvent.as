@@ -2,8 +2,6 @@ package nmmap.events
 {
 	import flash.events.Event;
 	
-	import nmmap.vo.StoreVO;
-	
 	public class LegendEvent extends Event
 	{
 		public static const ADD_STORE_NUMBER:String = 'addStoreNumber';		

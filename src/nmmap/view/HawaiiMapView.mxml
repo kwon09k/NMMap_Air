@@ -7,6 +7,9 @@
 		 width="400" height="300"
 		 creationComplete="_creationCompleteHandler(event)">
 	
+
+	
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -43,7 +46,7 @@
 			{
 				hawaiiMap.tileMap.showMobileCursor = true;
 				hawaiiMap.setCenter(new LatLng(21.18, -157.51));				
-				
+				hawaiiMap.draggable = false;
 			}
 			
 			private var _coordinates:Array = [];
@@ -81,7 +84,7 @@
 					poi.labelVisible = false;
 					
 					//add event listener for each poi
-//					poi.addEventListener(MouseEvent.CLICK, onChildPoiClickHandler);
+					poi.addEventListener(MouseEvent.CLICK, onChildPoiClickHandler);
 					
 					
 					poi.icon = generatePOIIcon(storeInfo);
@@ -130,7 +133,9 @@
 			{
 				var index:int = event.currentTarget.key;
 				var storeInfo:StoreVO = _storeInformation[index];
-				var point:Point = new Point(this.mouseX, this.mouseY);
+				var point:Point = new Point(this.mouseX+50, this.mouseY+700);
+				
+				trace(mouseX, mouseY);
 				
 				storeInfo.key = index;
 				
@@ -142,10 +147,40 @@
 				poiClicked[index] = true;
 			}
 			
+			public function contentWindowClosed(event:ContentWindowEvent):void
+			{
+				var index:int = event.index;
+				
+				poiClicked[index] = false;
+			}
+			
+			protected function hawaiiMap_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function showHawaii_clickHandler(event:MouseEvent):void
+			{
+				showHawaii.visible = false;
+				hideHawaii.visible = true;
+				hawaiiMapContainer.visible = true;
+				hawaiiMap.visible = true;
+			}
+			
+			protected function hideHawaii_clickHandler(event:MouseEvent):void
+			{
+				showHawaii.visible = true;
+				hideHawaii.visible = false;
+				hawaiiMapContainer.visible = false;
+				hawaiiMap.visible = false;
+				
+			}
+			
 		]]>
 		
 	</fx:Script>
-	<s:Rect width="100%" height="100%">
+	<s:Rect id="hawaiiMapContainer" width="100%" height="100%" visible="false">
 			<s:fill>
 				<s:SolidColor color="#000000"/>
 			</s:fill>
@@ -154,6 +189,18 @@
 						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
 						 width="100%" height="100%"
 						 left="5" right="5" bottom="5" top="5"
-						 zoom="6"/>
+						 zoom="6"
+						 click="hawaiiMap_clickHandler(event)"
+						 visible="false"/>
+	
+	<s:Button id="showHawaii"
+			  label="Show Hawii Map"
+			  visible="true"
+			  click="showHawaii_clickHandler(event)"/>
+	
+	<s:Button id="hideHawaii"
+			  label="Hide Hawii Map"
+			  visible="false"
+			  click="hideHawaii_clickHandler(event)"/>
 
 </s:Group>

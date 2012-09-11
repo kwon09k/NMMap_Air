@@ -1,7 +1,5 @@
 package nmmap.view
 {
-	import flash.events.MouseEvent;
-	
 	import nmmap.events.ContentWindowEvent;
 	import nmmap.events.HawaiiMapEvent;
 	import nmmap.events.LegendEvent;
@@ -114,10 +112,6 @@ package nmmap.view
 		
 		
 		
-		private function _windowClosedHandler(event:ContentWindowEvent):void
-		{//TODO
-			view.contentWindowClosed(event);
-		}
 		private function _showRedHandler(event:MapEvent):void
 		{
 			view.showRedPoi();
@@ -159,6 +153,10 @@ package nmmap.view
 		private function _refreshContentWindowHandler(event:ContentWindowEvent):void
 		{
 			dispatch(new ContentWindowEvent(ContentWindowEvent.REFRESH_CONTENT_WINDOW, event.storeInfo, event.point));
+		}
+		private function _windowClosedHandler(event:ContentWindowEvent):void
+		{
+			view.contentWindowClosed(event);
 		}
 		
 	}

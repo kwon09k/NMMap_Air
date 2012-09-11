@@ -13,9 +13,6 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import com.mapquest.LatLng;
-			
-			import mx.core.IFlexDisplayObject;
 			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
@@ -150,7 +147,7 @@
 		<view:HawaiiMapView id="hawaii"
 							x="50" y="700"/>
 		<view:MapButton id="myMapButton"/>
-		<view:Legend id="myLegend"/>
+		<view:MapLegend id="myLegend"/>
 		<!--<view:ContentWindow id="myContentWindow"/>-->
 
 	</s:Group>

@@ -45,24 +45,26 @@
 			
 			protected function red_clickHandler(event:MouseEvent):void
 			{
-				dispatchEvent(new MapEvent(MapEvent.SHOW_RED_POI));				
+				dispatchEvent(new MapEvent(MapEvent.SHOW_RED_POI));
+				showAll.visible = true;
 			}
 			
 			protected function yellow_clickHandler(event:MouseEvent):void
 			{
 				dispatchEvent(new MapEvent(MapEvent.SHOW_YELLOW_POI));				
-				
+				showAll.visible = true;
 			}
 			
 			protected function green_clickHandler(event:MouseEvent):void
 			{
 				dispatchEvent(new MapEvent(MapEvent.SHOW_GREEN_POI));				
-				
+				showAll.visible = true;
 			}
 			
 			protected function all_clickHandler(event:MouseEvent):void
 			{
 				dispatchEvent(new MapEvent(MapEvent.SHOW_ALL_POI));
+				showAll.visible = false;
 			}
 			
 		]]>
@@ -106,7 +108,11 @@
 				 textAlign="center" verticalAlign="middle"/>
 	</s:BorderContainer>
 	
-	<s:BorderContainer width="90" height="40" buttonMode="true" click="all_clickHandler(event)">
+	<s:BorderContainer id="showAll" 
+					   width="90" height="40" 
+					   buttonMode="true" 
+					   click="all_clickHandler(event)"
+					   visible="false">
 		<s:Image id="all_green" 
 				 x="19" y="24" 
 				 width="12" height="12"
