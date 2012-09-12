@@ -59,6 +59,11 @@
 //				
 //				stage.addEventListener(TransformGestureEvent.GESTURE_ROTATE,
 //					eventHandler);
+				
+				myMapButton.width = this.width;
+				trace("wh is ", this.width, this.height);
+				
+				
 			}
 			
 			protected function eventHandler(event:TransformGestureEvent) :
@@ -143,11 +148,11 @@
 			 width="100%" height="100%"
 			 x="0" y="0"
 			 click="mainView_clickHandler(event)">
-		<view:MapView id="myMapView" />
+		<view:MapView id="myMapView"/>
 		<view:HawaiiMapView id="hawaii"
 							x="50" y="700"/>
-		<view:MapButton id="myMapButton"/>
-		<view:MapLegend id="myLegend"/>
+			<view:MapButton id="myMapButton" horizontalAlign="center"/>
+			<view:MapLegend id="myLegend"/>
 		<!--<view:ContentWindow id="myContentWindow"/>-->
 
 	</s:Group>

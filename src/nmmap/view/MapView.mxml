@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:mq="com.mapquest.tilemap.*"
 		 xmlns:flex="com.mapquest.tilemap.controls.flex.*"
-		 width="100%" height="100%"
-		 creationComplete="_creationCompleteHandler(event)">
+		 width="100%" height="100%" creationComplete="_creationCompleteHandler(event)">
 	
 	
 	<fx:Declarations>
@@ -57,6 +56,11 @@
 			
 			private function _creationCompleteHandler(event:FlexEvent):void
 			{
+				mapContainer.x = mapContainer.width/2;
+				mapContainer.y = mapContainer.height/2;
+				statesMap.x = -mapContainer.width/2;
+				statesMap.y = -mapContainer.height/2;
+				
 				//add controls to the map
 //				myMap.addControl(new SMLargeZoomControl());
 //				myMap.addControl(new SMViewControl);
@@ -152,34 +156,38 @@
 				}
 				if (event.phase == "update")
 				{					
-					if(statesMap.tileMap.scaleX*event.scaleX < 0.7 || statesMap.scaleX*event.scaleX > 1.08)
+					if(mapContainer.scaleX*event.scaleX < 0.7 || mapContainer.scaleX*event.scaleX > 1.75) //statesMap.tileMap.scaleX*event.scaleX < 0.7 || statesMap.scaleX*event.scaleX > 1.08)
 					{
 					}
 					else
 					{
-						statesMap.tileMap.scaleX *= event.scaleX;
-						statesMap.tileMap.scaleY *= event.scaleY;
+//						statesMap.tileMap.scaleX *= event.scaleX;
+//						statesMap.tileMap.scaleY *= event.scaleY;
+						mapContainer.scaleX *= event.scaleX;
+						mapContainer.scaleY *= event.scaleY;
 						
 						trace(statesMap.tileMap.zoom);
 						
 						trace("inside else mapX and eventX " + statesMap.tileMap.scaleX + " "+ event.scaleX + " mapY and eventY " + statesMap.tileMap.scaleY + " "+ event.scaleY);
 					}
-					if(statesMap.tileMap.scaleX < 1)
+					if(mapContainer.scaleX < 1)//statesMap.tileMap.scaleX < 1)
 						_isPinching = true;
-					if(statesMap.tileMap.scaleX > 1)
+					if(mapContainer.scaleX > 1)//statesMap.tileMap.scaleX > 1)
 						_isPinching = false;
 				}
 				if (event.phase == "end") 
 				{
 					if(_isPinching)
-						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel - statesMap.tileMap.scaleX);
+						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel - mapContainer.scaleX);//statesMap.tileMap.scaleX);
 					else
-						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel + statesMap.tileMap.scaleX);
+						statesMap.setCenter(_centerLatLng, statesMap.zoomLevel + mapContainer.scaleX);//statesMap.tileMap.scaleX);
 //						myMap.setCenter(myMap.pixToLL(_touchPoint), myMap.zoomLevel + myMap.tileMap.scaleX);
 					
 					
-					statesMap.tileMap.scaleX = 1;
-					statesMap.tileMap.scaleY = 1;
+//					statesMap.tileMap.scaleX = 1;
+//					statesMap.tileMap.scaleY = 1;
+					mapContainer.scaleX = 1;
+					mapContainer.scaleY = 1;
 				}
 			}
  
@@ -470,18 +478,20 @@
 					return;
 				
 			}
-			
+
 		]]>
 		
+		
+
 	</fx:Script>
-	
-	<mq:TilemapComponent id="statesMap" 
-						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
-						 width="100%" height="100%"
-						 zoom="5"						
-						 x="0" y="0"
-						 doubleClick="statesMap_doubleClickHandler(event)"
-						 gestureTwoFingerTap="myMap_gestureTwoFingerTapHandler(event)"/>
+	<s:SkinnableContainer id="mapContainer" width="1920" height="1080">
+		<mq:TilemapComponent id="statesMap" 
+							 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
+							 width="100%" height="100%"
+							 zoom="5"						
+							 doubleClick="statesMap_doubleClickHandler(event)"
+							 gestureTwoFingerTap="myMap_gestureTwoFingerTapHandler(event)"/>
+	</s:SkinnableContainer>
 		
 <!-- 		
 		
