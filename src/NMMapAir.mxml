@@ -29,8 +29,28 @@
 			
 			
 			
+			
+			private var timer:Timer = new Timer(30000); //30000ms, 30s timer
+			
+			private function startTimer():void
+			{
+				timer.addEventListener(TimerEvent.TIMER, timerHandler);
+				timer.start();
+			}
+			
+			private function timerHandler(event:TimerEvent):void
+			{
+				trace("refreshing every 30 seconds");
+			}
+			
+			
+			
+			
+			
+			
 			protected function addedToStageHandler():void
 			{
+				this.startTimer();
 				this.stage.displayState = StageDisplayState.FULL_SCREEN;
 				
 				if (Multitouch.supportedGestures)
