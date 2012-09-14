@@ -6,6 +6,7 @@ package nmmap.events
 	{
 		
 		public static const GET_STORE_LOCATIONS:String = "getStoreLocations";
+		public static const REFRESH_STORE_LOCATIONS:String = "refreshStoreLocations";
 		
 		
 		public function RequestStoreInformationDataEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

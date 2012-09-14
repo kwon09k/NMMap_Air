@@ -7,6 +7,7 @@ package nmmap.events
 	{
 		public static const STORE_INFORMATION_SERVICE_SUCCESS:String = 'Store Information Service Success';
 		public static const STORE_INFORMATION_SERVICE_FAULT:String = 'Store Information Service Fault';
+		public static const REFRESH_STORE_INFORMATION_SERVICE_SUCCESS:String = 'Refresh Store Information Service Success';
 
 		private var _payload:Array=[];
 		

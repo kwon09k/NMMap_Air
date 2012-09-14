@@ -1,6 +1,7 @@
 package nmmap.view
 {
 	import nmmap.events.ContentWindowEvent;
+	import nmmap.events.RequestStoreInformationDataEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -19,6 +20,8 @@ package nmmap.view
 			super.onRegister();
 			addViewListener(ContentWindowEvent.WINDOW_CLOSED, _windowClosedHandler);
 			
+			addViewListener(RequestStoreInformationDataEvent.GET_STORE_LOCATIONS, _refreshStoreLocationHandler);
+			
 			addContextListener(ContentWindowEvent.ADD_CONTENT_WINDOW, _addContentWindowHandler);
 			addContextListener(ContentWindowEvent.REFRESH_CONTENT_WINDOW, _refreshContentWindowHandler);
 		}
@@ -35,6 +38,10 @@ package nmmap.view
 		private function _windowClosedHandler(event:ContentWindowEvent):void
 		{
 			dispatch(new ContentWindowEvent(ContentWindowEvent.WINDOW_CLOSED,null,null, event.index));
+		}
+		private function _refreshStoreLocationHandler(event:RequestStoreInformationDataEvent):void
+		{
+			dispatch(new RequestStoreInformationDataEvent(RequestStoreInformationDataEvent.GET_STORE_LOCATIONS));
 		}
 		
 		
