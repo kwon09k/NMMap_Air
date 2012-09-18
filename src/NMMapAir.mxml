@@ -31,7 +31,7 @@
 			
 			
 			
-			private var timer:Timer = new Timer(3000); //30000ms, 30s timer
+			private var timer:Timer = new Timer(30000); //30000ms, 30s timer
 			
 			private function startTimer():void
 			{

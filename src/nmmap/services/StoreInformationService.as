@@ -16,7 +16,6 @@ package nmmap.services
 	{
 		
 		private var _remote:RemoteObject;
-		private var isFirstTime:Boolean = true;
 		
 		public function StoreInformationService()
 		{
@@ -86,15 +85,7 @@ package nmmap.services
 			
 			// isFirstTime boolean is true when the application starts, but after the service is called for first time,
 			// it will indicate that it is not first time anymore. It will be used for refresh the service data.
-			if(isFirstTime)
-			{
-				dispatch(new StoreInformationServiceResponseEvent(StoreInformationServiceResponseEvent.STORE_INFORMATION_SERVICE_SUCCESS, locations));
-				isFirstTime = false;
-			}
-			else
-			{
-				dispatch(new StoreInformationServiceResponseEvent(StoreInformationServiceResponseEvent.REFRESH_STORE_INFORMATION_SERVICE_SUCCESS, locations));
-			}
+			dispatch(new StoreInformationServiceResponseEvent(StoreInformationServiceResponseEvent.STORE_INFORMATION_SERVICE_SUCCESS, locations));
 		}
 		
 		public function getStoreLocations_faultHandler(info:Object):void

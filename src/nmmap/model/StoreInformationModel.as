@@ -28,12 +28,6 @@ package nmmap.model
 			dispatch(new ModelUpdateEvent(ModelUpdateEvent.STORE_INFORMATION_MODEL_UPDATED_STORE_INFORMATION, _storeInformation));
 		}
 		
-		public function updateStoreInformation(value:Array):void
-		{
-			_storeInformation = value;
-			trace('model is updated for refresh');
-			//TODO after this point. update poi's color and such.
-		}
 
 		public function set storeLatLng(latLng:Array):void
 		{

@@ -155,8 +155,8 @@
 					_touchPoint = this.globalToLocal(new Point(event.stageX, event.stageY));
 				}
 				if (event.phase == "update")
-				{					
-					if(mapContainer.scaleX*event.scaleX < 0.7 || mapContainer.scaleX*event.scaleX > 1.75) //statesMap.tileMap.scaleX*event.scaleX < 0.7 || statesMap.scaleX*event.scaleX > 1.08)
+				{					//0.7 && 1.75
+					if(mapContainer.scaleX*event.scaleX < 0.50 || mapContainer.scaleX*event.scaleX > 2.25) //statesMap.tileMap.scaleX*event.scaleX < 0.7 || statesMap.scaleX*event.scaleX > 1.08)
 					{
 					}
 					else
