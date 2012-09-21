@@ -19,6 +19,7 @@
 			import com.mapquest.tilemap.TileMapEvent;
 			import com.mapquest.tilemap.controls.inputdevice.*;
 			import com.mapquest.tilemap.controls.shadymeadow.*;
+			import com.mapquest.tilemap.overlays.RectangleOverlay;
 			import com.mapquest.tilemap.pois.*;
 			
 			import mx.events.FlexEvent;
@@ -56,6 +57,18 @@
 			
 			private function _creationCompleteHandler(event:FlexEvent):void
 			{
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				mapContainer.x = mapContainer.width/2;
 				mapContainer.y = mapContainer.height/2;
 				statesMap.x = -mapContainer.width/2;
@@ -217,11 +230,6 @@
 				var storeInfo:StoreVO;
 
 				
-					
-					
-					
-					
-				
 				for (var i:int=0; i<length; i++)
 				{
 					storeInfo = _storeInformation[i];
@@ -253,8 +261,11 @@
 					_childPoiColl.add(poi);
 					
 					//add pois to the map
-					statesMap.addShapeCollection(_childPoiColl);
+//					statesMap.addShapeCollection(_childPoiColl);
 				}
+				
+				//add master RectangleOvery
+				addMasterRect();
 				
 				//add Event to show store numbers in the Legend View
 				dispatchEvent(new LegendEvent(LegendEvent.ADD_STORE_NUMBER, _storeInformation));
@@ -286,7 +297,193 @@
 				} 
 				
 			}
-			
+			private function addMasterRect():void
+			{
+				var vertices:Array = [null, null];
+				for(var i:int = 0; i <= 19; i++) 
+				{
+					//set various overlay properties
+					var masterRect:RectangleOverlay = new RectangleOverlay();
+					masterRect.borderWidth = 2;
+					masterRect.colorAlpha = 1;
+					masterRect.fillColorAlpha = 0.40;
+					masterRect.color = 0x003366;
+					masterRect.fillColor = 0xFFFFFF;
+					masterRect.doubleClickEnabled = true;
+					masterRect.addEventListener(MouseEvent.MOUSE_OUT, rectangleOverlayOutHandler); 
+					masterRect.addEventListener(MouseEvent.MOUSE_OVER, rectangleOverlayOverHandler); 
+					masterRect.addEventListener(MouseEvent.CLICK, rectangleOverlayClickHandler); 
+					
+					var shapePts:LatLngCollection = new LatLngCollection();
+					switch (i)
+					{
+						case 0:
+							masterRect.key = ("texasArea");
+							vertices = getVertices("TX");
+							break;
+						case 1:
+							masterRect.key = ("CaliforniaArea");
+							vertices = getVertices("CA");
+							break;
+						case 2:
+							masterRect.key = ("NevadaArea");
+							vertices = getVertices("NV");
+							break;
+						case 3:
+							masterRect.key = ("");
+							vertices = getVertices("AZ");
+							break;
+						case 4:
+							masterRect.key = ("");
+							vertices = getVertices("DC");
+							break;
+						case 5:
+							masterRect.key = ("");
+							vertices = getVertices("FL");
+							break;
+						case 6:
+							masterRect.key = ("");
+							vertices = getVertices("IL");
+							break;
+						case 7:
+							masterRect.key = ("");
+							vertices = getVertices("MI");
+							break;
+						case 8:
+							masterRect.key = ("");
+							vertices = getVertices("NC");
+							break;
+						case 9:
+							masterRect.key = ("");
+							vertices = getVertices("VA");
+							break;
+						case 10:
+							masterRect.key = ("");
+							vertices = getVertices("NY");
+							break;
+						case 11:
+							masterRect.key = ("");
+							vertices = getVertices("NJ");
+							break;
+						case 12:
+							masterRect.key = ("");
+							vertices = getVertices("MN");
+							break;
+						case 13:
+							masterRect.key = ("");
+							vertices = getVertices("MA");
+							break;
+						case 14:
+							masterRect.key = ("");
+							vertices = getVertices("MO");
+							break;
+						case 15:
+							masterRect.key = ("");
+							vertices = getVertices("PA");
+							break;
+						case 16:
+							masterRect.key = ("");
+							vertices = getVertices("WA");
+							break;
+						case 17:
+							masterRect.key = ("");
+							vertices = getVertices("GA");
+							break;
+						case 18:
+							masterRect.key = ("");
+							vertices = getVertices("CO");
+							break;
+						case 19:
+							masterRect.key = ("");
+							vertices = getVertices("MD");
+							break;
+						
+					}
+					shapePts.add(vertices[0]);
+					shapePts.add(vertices[1]);
+
+					
+					masterRect.shapePoints = shapePts;
+					_masterPoiColl.add(masterRect);
+					
+				}
+				
+				
+				statesMap.addShapeCollection(_masterPoiColl);
+			}
+			private function getVertices(states:String):Array
+			{
+				var data:Array=[];
+				var length:int = _storeInformation.length;
+				var storeInfo:StoreVO;
+				
+				for(var i:int = 0; i<length; i++)
+				{
+					storeInfo = _storeInformation[i];
+					if(storeInfo.state == states)
+						data.push(storeInfo.latLng);
+				}
+				
+				//TX
+//					33.042442,-98.508804                y,x               >>>+
+//					URvertex:33.014809,-94.778946                ----,----         ++++,++++ 
+//					LLvertext:29.637141,-98.470352
+//					29.632366,-94.822891
+				
+				var vertices:LatLng = data[0];
+				var maxLat:Number = vertices.lat;
+				var maxLng:Number = vertices.lng;
+				
+				var minLat:Number = vertices.lat;
+				var minLng:Number = vertices.lng;
+				
+				var lowerLeftVertex:LatLng;
+				var upperRightVertex:LatLng;
+				var result:Array = [];
+				length = data.length;
+				for(i = 0; i<length; i++)
+				{
+					vertices = data[i];
+
+					if(maxLat < vertices.lat)
+						maxLat = vertices.lat;
+					if(maxLng < vertices.lng)
+						maxLng = vertices.lng;
+					
+					if(minLat > vertices.lat)
+						minLat = vertices.lat;
+					if(minLng > vertices.lng)
+						minLng = vertices.lng;
+				}
+				lowerLeftVertex = new LatLng(maxLat, maxLng);
+				upperRightVertex = new LatLng(minLat, minLng);
+				trace("lower: ",lowerLeftVertex,"upper: ",upperRightVertex);
+				result.push(lowerLeftVertex);
+				result.push(upperRightVertex);
+				return result;
+			}
+			protected function rectangleOverlayClickHandler(event:MouseEvent):void
+			{
+				var clickPoint:LatLng;
+				clickPoint = statesMap.pixToLL(new Point(statesMap.mouseX, statesMap.mouseY));
+				statesMap.setCenter(clickPoint);
+				statesMap.zoom = 8;
+				statesMap.addShapeCollection(_childPoiColl);
+				
+				
+				trace(clickPoint);
+				
+				
+//				statesMap.setCenter(new LatLng(31.33644,-96.547744)); //texas
+			}
+			protected function rectangleOverlayOutHandler(event:MouseEvent):void
+			{
+				event.currentTarget.fillColorAlpha = 0.40;
+			}
+			protected function rectangleOverlayOverHandler(event:MouseEvent):void
+			{
+				event.currentTarget.fillColorAlpha = 0.90;
+			}
 			public function filterPoi():void
 			{
 				var length:int = _childPoiColl.length;
