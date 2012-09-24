@@ -58,17 +58,6 @@
 			private function _creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 				mapContainer.x = mapContainer.width/2;
 				mapContainer.y = mapContainer.height/2;
 				statesMap.x = -mapContainer.width/2;
@@ -116,7 +105,7 @@
  				myMap.addEventListener(TileMapEvent.ZOOM_END, zoomHandler);
 */				
 
-				
+				statesMap.addEventListener(TileMapEvent.ZOOM_END, zoomHandler);
 				
 				statesMap.tileMap.usePinchZoom = false;
 //				return;
@@ -218,9 +207,25 @@
 			}
 			
 			private var _storeInformation:Array = [];
-			public function setLocationInformation(value:Array):void
+			public function set locationInformation(value:Array):void
 			{
 				_storeInformation = value;
+			}
+			
+			public function get locationInformation():Array{
+				return _storeInformation;
+			}
+			
+			public function plotData( coordinates:Array, details:Array ):void
+			{
+				_coordinates = coordinates;
+				_storeInformation = details;
+				mapLocationData();
+			}
+			
+			public function updateDetails(details:Array):void
+			{
+				
 			}
 			
 			public function mapLocationData():void
@@ -229,11 +234,10 @@
 				var poi:Poi;
 				var storeInfo:StoreVO;
 
-				
+				_childPoiColl.removeAll();
 				for (var i:int=0; i<length; i++)
 				{
 					storeInfo = _storeInformation[i];
-					
 					
 //					trace("new StoreVO(\""+storeInfo.abbrevCombine+"\", \""+storeInfo.businessUnitCode+"\", \""+storeInfo.city+"\", \""+storeInfo.country+"\","+storeInfo.key+","+storeInfo.latitude+", new LatLng("+storeInfo.latLng+"),"+storeInfo.longitude+","+storeInfo.postalCode+", \""+storeInfo.state+"\", \""+storeInfo.storeName+"\","+storeInfo.storeNumber+", \""+storeInfo.street1+"\", \""+storeInfo.street2+"\", \""+storeInfo.subBusinessUnitCode+"\", \""+storeInfo.subBusinessUnitDesc+"\"),");
 					
@@ -259,7 +263,8 @@
 					
 					// _childPoi is the shapecollection for the child poi's, add poi's to the shapeCollection
 					_childPoiColl.add(poi);
-					
+					_storeHash[storeInfo.abbrevCombine] = poi;
+
 					//add pois to the map
 //					statesMap.addShapeCollection(_childPoiColl);
 				}
@@ -299,6 +304,7 @@
 			}
 			private function addMasterRect():void
 			{
+				_masterPoiColl.removeAll();
 				var vertices:Array = [null, null];
 				for(var i:int = 0; i <= 19; i++) 
 				{
@@ -306,7 +312,7 @@
 					var masterRect:RectangleOverlay = new RectangleOverlay();
 					masterRect.borderWidth = 2;
 					masterRect.colorAlpha = 1;
-					masterRect.fillColorAlpha = 0.40;
+					masterRect.fillColorAlpha = 0.30;
 					masterRect.color = 0x003366;
 					masterRect.fillColor = 0xFFFFFF;
 					masterRect.doubleClickEnabled = true;
@@ -335,7 +341,7 @@
 							break;
 						case 4:
 							masterRect.key = ("");
-							vertices = getVertices("DC");
+							vertices = getVertices("GA");
 							break;
 						case 5:
 							masterRect.key = ("");
@@ -355,7 +361,7 @@
 							break;
 						case 9:
 							masterRect.key = ("");
-							vertices = getVertices("VA");
+							vertices = getVertices("CO");
 							break;
 						case 10:
 							masterRect.key = ("");
@@ -387,17 +393,34 @@
 							break;
 						case 17:
 							masterRect.key = ("");
-							vertices = getVertices("GA");
+							vertices = getVertices("DC","VA","MD");
 							break;
-						case 18:
-							masterRect.key = ("");
-							vertices = getVertices("CO");
-							break;
-						case 19:
-							masterRect.key = ("");
-							vertices = getVertices("MD");
-							break;
+//						case 18:
+//							masterRect.key = ("");
+//							vertices = getVertices("VA");
+//							break;
+//						case 19:
+//							masterRect.key = ("");
+//							vertices = getVertices("MD");
+//							break;
 						
+					}
+					trace("distance is", vertices[0].arcDistance(vertices[1]));
+					if(vertices[0].arcDistance(vertices[1]) < 50)
+					{
+						vertices[0].lat += 0.35;
+						vertices[0].lng += 0.35;
+						
+						if(vertices[1] == null)
+						{
+							vertices[1].lat = vertices[0].lat - 0.35;
+							vertices[1].lng = vertices[0].lng - 0.35;
+						}
+						else
+						{							
+							vertices[1].lat -= 0.35;
+							vertices[1].lng -= 0.35;
+						}
 					}
 					shapePts.add(vertices[0]);
 					shapePts.add(vertices[1]);
@@ -408,20 +431,33 @@
 					
 				}
 				
-				
-				statesMap.addShapeCollection(_masterPoiColl);
+				if(statesMap.zoom == 5)
+					statesMap.addShapeCollection(_masterPoiColl);
 			}
-			private function getVertices(states:String):Array
+			
+			
+			private var _storeHash:Object={};
+			private function udpateStoreStatus(storeId:String):void
+			{
+				
+				
+				
+			}
+			
+			//TODO
+			private function getVertices(state:String, state2:String=null, state3:String=null):Array
 			{
 				var data:Array=[];
 				var length:int = _storeInformation.length;
 				var storeInfo:StoreVO;
 				
+				//find the latitude and longitude for the specific state from the value object.
 				for(var i:int = 0; i<length; i++)
 				{
 					storeInfo = _storeInformation[i];
-					if(storeInfo.state == states)
+					if(storeInfo.state == state || storeInfo.state == state2 || storeInfo.state == state3)
 						data.push(storeInfo.latLng);
+					
 				}
 				
 				//TX
@@ -440,7 +476,9 @@
 				var lowerLeftVertex:LatLng;
 				var upperRightVertex:LatLng;
 				var result:Array = [];
+				
 				length = data.length;
+				
 				for(i = 0; i<length; i++)
 				{
 					vertices = data[i];
@@ -455,11 +493,12 @@
 					if(minLng > vertices.lng)
 						minLng = vertices.lng;
 				}
+				
 				lowerLeftVertex = new LatLng(maxLat, maxLng);
 				upperRightVertex = new LatLng(minLat, minLng);
 				trace("lower: ",lowerLeftVertex,"upper: ",upperRightVertex);
-				result.push(lowerLeftVertex);
-				result.push(upperRightVertex);
+
+				result= [lowerLeftVertex, upperRightVertex];
 				return result;
 			}
 			protected function rectangleOverlayClickHandler(event:MouseEvent):void
@@ -568,6 +607,7 @@
 				}
 			}			
 			
+			//using to zoom In or Out from the outside of this view. i.e) from the mediator
 			public function customZoomIn():void
 			{
 				statesMap.zoomIn();
@@ -600,7 +640,7 @@
 			
 			protected function zoomHandler(event:TileMapEvent):void
 			{
-				if(event.zoom > 3)
+				if(event.zoom > 6)
 				{
 					statesMap.addShapeCollection(_childPoiColl);
 					statesMap.removeShapeCollection(_masterPoiColl);

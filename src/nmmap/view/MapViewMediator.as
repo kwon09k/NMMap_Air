@@ -93,10 +93,10 @@ package nmmap.view
 			storeInformation = model.storeInformation;
 			latLng = event.updatedValue;
 			
-			view.setCoordinates(latLng);
-			view.setLocationInformation(storeInformation);
-			view.mapLocationData();
-			
+//			view.setCoordinates(latLng);
+//			view.locationInformation = storeInformation;
+//			view.mapLocationData();
+			view.plotData( latLng, storeInformation);
 			dispatch(new HawaiiMapEvent(HawaiiMapEvent.UPDATE_HAWAII_MAP, event.updatedValue));
 			
 		}
