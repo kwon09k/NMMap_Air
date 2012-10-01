@@ -5,7 +5,7 @@ package nmmap.controller
 	 * Store Locations Response Command
 	 * 
 	 * Author: yKwon
-	 * Date: August 27, 2012
+	 * Date: October 27, 2012
 	 * 
 	 * 
 	 * 

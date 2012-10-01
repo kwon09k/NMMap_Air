@@ -5,7 +5,7 @@
 	  * Updated Store Information Command
 	  * 
 	  * Author: yKwon
-	  * Date: August 27, 2012
+	  * Date: October 01, 2012
 	  * 
 	  * 
 	  * 
@@ -31,7 +31,7 @@
 		[Inject]
 		public var service:IGeocodeService;
 		
-		private var _locations:Array = [];
+		private var _storeInfo:Array = [];
 		private var _geocodeAddress:Array = [];
 		
 		public function UpdatedStoreInformationCommand()
@@ -44,25 +44,27 @@
 		{
 			super.execute();
 			
-			
-			_locations = event.updatedValue;
+			//_locations is an array of StoreVO
+			_storeInfo = event.updatedValue;
 			
 			var loc:GeocoderLocation;
-			var length:int = _locations.length;
+			var length:int = _storeInfo.length;
 			
 			for(var i:int = 0; i < length; i++)
 			{
 				loc = new GeocoderLocation();
-				loc.street = _locations[i].street1;
-				loc.city  = _locations[i].city;
-				loc.state = _locations[i].state;
-				loc.postalCode = _locations[i].postalCode;
-				loc.country = _locations[i].country;
+				loc.street = _storeInfo[i].location.street1;
+				loc.city  = _storeInfo[i].location.city;
+				loc.state = _storeInfo[i].location.state;
+				loc.postalCode = _storeInfo[i].location.postalCode;
+				loc.country = _storeInfo[i].location.country;
 				
 				_geocodeAddress[i] = loc;
 				
-			trace(loc.street);
+//			trace(loc.street);
 			}
+			
+			//use GeocoderLocation objects to geocode faster 
 			service.doGeocode(_geocodeAddress);
 		}
 	}

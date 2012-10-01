@@ -16,7 +16,7 @@ package nmmap.model
 		}
 		
 		
-		public function get storeLatLng():Array
+/*		public function get storeLatLng():Array
 		{
 			return _storeLatLng;
 		}
@@ -29,7 +29,7 @@ package nmmap.model
 			
 			dispatch(new ModelUpdateEvent(ModelUpdateEvent.UPDATE_LATITUDE_AND_LONGITUDE, latLng));
 		}
-		
+		*/
 
 		
 	}

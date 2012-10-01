@@ -15,9 +15,6 @@ package nmmap.services
 	
 	public class GeocodeService extends Actor implements IGeocodeService
 	{
-		[Inject]
-		public var model:PoiModel;
-		
 		private var _geocoder:Geocoder; 
 		
 		public function GeocodeService()
@@ -51,7 +48,7 @@ package nmmap.services
 			var latLng:Array=[];
 			
 			dispatch(new MapEvent(MapEvent.REMOVE_BUSY_CURSOR));
-			trace("geocode done\n\n");
+			trace("Geocode succeed\n\n");
 			
 			_geocoder.removeEventListener(GeocoderEvent.GEOCODE_RESPONSE, onGeocodeResponse);
 
@@ -62,7 +59,6 @@ package nmmap.services
 			}
 			
 				
-			//model.storeLatLng = latLng;
 			dispatch(new GeocodeServiceResponseEvent(GeocodeServiceResponseEvent.GEOCODE_SERVICE_SUCCESS, latLng));
 
 				

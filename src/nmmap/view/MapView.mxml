@@ -47,8 +47,6 @@
 			//create a ClusterDeclutter object
 			private var _deClutter:IDeclutter;
 			
-			//create a leaderlines object
-			private var _leaderLine:LeaderLines = new LeaderLines();
 			
 			public function goToStartView():void
 			{
@@ -72,19 +70,15 @@
 				statesMap.addControl(new KeyboardControl());
 				
 				statesMap.tileMap.showMobileCursor = true;
-				//setting center based on master poi				
+				//setting center based on master poi
 				statesMap.setCenter(new LatLng(35.283, -97.3058));
 				
 				
 				
 				
-				//add a leader line object so we can change the properties of the leader lines
-				statesMap.leaderLines = _leaderLine;
-				_leaderLine.lineColor = 0x0066FF;
-				
 				
 //				_deClutter = new  ForceDeclutter();//new CircleDeclutter();
-				//turn on declutter mode
+//				turn on declutter mode
 //				statesMap.declutter = _deClutter;	
 				
 /* master poi				
@@ -95,11 +89,6 @@
 				myMap.addShapeCollection(_masterPoiColl);
 				
 				
-				//initialize master poi's icon
-				var redPin:MapIcon = new MapIcon();
-				redPin.setImage(new red(), 48, 48);
-				_masterPoi.icon = redPin;
-				_masterPoi.altIcon = redPin;
 
 				//add events
 				_masterPoi.addEventListener(MouseEvent.CLICK, onMasterPoiClickHandler);
@@ -109,7 +98,6 @@
 				statesMap.addEventListener(TileMapEvent.ZOOM_END, zoomHandler);
 				
 				statesMap.tileMap.usePinchZoom = false;
-//				return;
 				
 				Multitouch.inputMode = MultitouchInputMode.GESTURE;
 
@@ -117,41 +105,20 @@
 				
 				
 //				myMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onTransformGestureZoom);
-				statesMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onZoom);
-//				statesMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onMatrixZoom);
+				statesMap.addEventListener(TransformGestureEvent.GESTURE_ZOOM, onPinchZoomHandler);
 
-				trace(_storeInformation);
 			}			
 			
- 			private function onMatrixZoom(event:TransformGestureEvent):void
-			{
-				var matrix:Matrix = statesMap.transform.matrix;
-				
-				if(statesMap.scaleX*event.scaleX < 1)
-				{
-					statesMap.x = 0;
-					statesMap.y = 0;
-					return;
-				}
-				else
-				{
-					matrix.translate(-event.localX, -event.localY);
-					matrix.scale(event.scaleX, event.scaleY);
-					matrix.translate(event.localX, event.localY);
-					statesMap.transform.matrix = matrix;
-				}
-//				statesMap.setCenter(_centerLatLng, statesMap.zoomLevel - statesMap.tileMap.scaleX);
-			}
+
 			
 			private var _isPinching:Boolean;
 			private var _centerLatLng:LatLng;
 			private var _touchPoint:Point;
 			
- 			private function onZoom(event:TransformGestureEvent):void
+ 			private function onPinchZoomHandler(event:TransformGestureEvent):void
 			{
 				
 				_centerLatLng = statesMap.center;
-				trace("outside else mapX and eventX " + statesMap.tileMap.scaleX + " "+ event.scaleX + " mapY and eventY " + statesMap.tileMap.scaleY + " "+ event.scaleY);
 				
 				if (event.phase == "begin") 
 				{
@@ -169,9 +136,8 @@
 						mapContainer.scaleX *= event.scaleX;
 						mapContainer.scaleY *= event.scaleY;
 						
-						trace(statesMap.tileMap.zoom);
+//						trace(statesMap.tileMap.zoom);
 						
-						trace("inside else mapX and eventX " + statesMap.tileMap.scaleX + " "+ event.scaleX + " mapY and eventY " + statesMap.tileMap.scaleY + " "+ event.scaleY);
 					}
 					if(mapContainer.scaleX < 1)//statesMap.tileMap.scaleX < 1)
 						_isPinching = true;
@@ -193,9 +159,6 @@
 					mapContainer.scaleY = 1;
 				}
 			}
- 
-			
-
 			
 
 			
@@ -398,14 +361,6 @@
 							masterRect.key = ("DCVirginiaMarylandArea");
 							vertices = getVertices("DC","VA","MD");
 							break;
-//						case 18:
-//							masterRect.key = ("");
-//							vertices = getVertices("VA");
-//							break;
-//						case 19:
-//							masterRect.key = ("");
-//							vertices = getVertices("MD");
-//							break;
 						
 					}
 					trace("distance is", vertices[0].arcDistance(vertices[1]));
@@ -444,10 +399,10 @@
 			{
 				
 				
+			//TODO
 				
 			}
 			
-			//TODO
 			private function getVertices(state:String, state2:String=null, state3:String=null):Array
 			{
 				var data:Array=[];
@@ -682,17 +637,10 @@
 			}
 			
 			
-			protected function myMap_clickHandler(event:MouseEvent):void
-			{
-//				trace("myMapLL is " + myMap.tileMap.pixToLL(new Point(this.mouseX, this.mouseY)));
-//				trace("Handler X is " + this.mouseX + " " + this.mouseY);
-				
-			}
 			
 			protected function myMap_gestureTwoFingerTapHandler(event:GestureEvent):void
 			{
-				// TODO Auto-generated method stub
-				trace("myMap_gestureTwoFingerTapHandler");
+				//disable zoom-out on two finger tap event
 				statesMap.zoomIn();
 			}
 			
@@ -733,14 +681,5 @@
 							 gestureTwoFingerTap="myMap_gestureTwoFingerTapHandler(event)"/>
 	</s:SkinnableContainer>
 		
-<!-- 		
-		
-	<mq:TilemapComponent id="hawaiiMap" 
-						 key="Fmjtd%7Cluua20u7n0%2C7g%3Do5-967556"
-						 width="250" height="250"
-						 x="50" y="800"
-						 zoom="5"/> -->
-	
- 	
 	
 </s:Group>

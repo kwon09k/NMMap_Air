@@ -45,22 +45,22 @@ package nmmap.view
 			addViewListener(ContentWindowEvent.ADD_CONTENT_WINDOW, _addContentWindowHandler);
 			addViewListener(ContentWindowEvent.REFRESH_CONTENT_WINDOW, _refreshContentWindowHandler);
 			
-			
 			addContextListener(ContentWindowEvent.WINDOW_CLOSED, _windowClosedHandler);
+			
 			
 			
 			addContextListener(ModelUpdateEvent.UPDATE_LATITUDE_AND_LONGITUDE, _updateCoordinates);
 			
+			
+			addContextListener(MapEvent.START_VIEW, _startViewHandler);
+			
 			addContextListener(MapEvent.SET_BUSY_CURSOR, _setBusyCursor);
 			addContextListener(MapEvent.REMOVE_BUSY_CURSOR, _removeBusyCursor);
-			
-			
 			
 			addContextListener(MapEvent.SHOW_RED_POI, _showRedHandler);
 			addContextListener(MapEvent.SHOW_YELLOW_POI, _showYellowHandler);
 			addContextListener(MapEvent.SHOW_GREEN_POI, _showGreenHandler);
 			addContextListener(MapEvent.SHOW_ALL_POI, _showAllHandler);
-			addContextListener(MapEvent.START_VIEW, _startViewHandler);
 			
 			addContextListener(MapEvent.ZOOM_IN, _zoomInHandler);
 			addContextListener(MapEvent.ZOOM_OUT, _zoomOutHandler);

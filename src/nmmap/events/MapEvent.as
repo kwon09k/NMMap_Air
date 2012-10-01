@@ -26,9 +26,8 @@ package nmmap.events
 		public static const SET_BUSY_CURSOR:String = "setBusyCursor";
 		public static const REMOVE_BUSY_CURSOR:String = "removeBusyCursor";
 		
-		public static const ADD_VIEW_TO_THE_APPLICATION:String = "removeBusyCursor";
+		public static const ADD_VIEW_TO_THE_APPLICATION:String = "addViewToTheApplication";
 		
-		public static const TESTING:String = "testing";
 		
 		
 		

@@ -5,7 +5,7 @@ package nmmap.controller
 	 * Geocode Response Command
 	 * 
 	 * Author: yKwon
-	 * Date: August 27, 2012
+	 * Date: October 01, 2012
 	 * 
 	 * 
 	 * 

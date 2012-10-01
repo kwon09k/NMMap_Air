@@ -5,7 +5,7 @@ package nmmap.controller
 	 * Get Store Locations Command
 	 * 
 	 * Author: yKwon
-	 * Date: August 27, 2012
+	 * Date: October 01, 2012
 	 * 
 	 * 
 	 * 
@@ -31,7 +31,6 @@ package nmmap.controller
 			super.execute();
 			
 			service.getStoreLocations();
-			trace("ServiceCommand");
 		}
 	}
 }

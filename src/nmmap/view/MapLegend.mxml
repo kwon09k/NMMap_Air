@@ -33,7 +33,7 @@
 					else
 						return ;
 				}
-				trace("number of red Poi is ",redNum);
+//				trace("number of red Poi is ",redNum);
 				redNumber.text = ""+redNum;
 				yellowNumber.text = ""+yellowNum;
 				greenNumber.text = ""+greenNum;

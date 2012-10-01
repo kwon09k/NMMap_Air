@@ -35,7 +35,7 @@ package nmmap.model
 			
 			for( var i:int = 0; i<length; i++)
 			{	
-				storeInformation[i].latLng = latLng[i];
+				_storeInformation[i].latLng = latLng[i];
 			}
 			
 			dispatch(new ModelUpdateEvent(ModelUpdateEvent.UPDATE_LATITUDE_AND_LONGITUDE, latLng));
