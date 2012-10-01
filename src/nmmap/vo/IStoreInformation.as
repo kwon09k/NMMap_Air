@@ -20,5 +20,6 @@ package nmmap.vo
 		function get latitude():Number;
 		function get longitude():Number;
 		function get latLng():LatLng;
+		function get status():int;
 	}
 }

@@ -37,6 +37,7 @@ package nmmap
 		
 		override public function startup():void
 		{
+			
 			injector.mapSingleton(PoiModel);
 			injector.mapSingleton(StoreInformationModel);
 			
@@ -50,13 +51,13 @@ package nmmap
 			commandMap.mapEvent(GeocodeServiceResponseEvent.GEOCODE_SERVICE_SUCCESS, GeocodeResponseCommand);
 
 			
-			commandMap.mapEvent(RequestStoreInformationDataEvent.GET_STORE_LOCATIONS, GetStoreLocationsCommand);
 			commandMap.mapEvent(StoreInformationServiceResponseEvent.STORE_INFORMATION_SERVICE_SUCCESS, StoreLocationsResponseCommand);
+			commandMap.mapEvent(RequestStoreInformationDataEvent.GET_STORE_LOCATIONS, GetStoreLocationsCommand);
 			commandMap.mapEvent(ModelUpdateEvent.STORE_INFORMATION_MODEL_UPDATED_STORE_INFORMATION, UpdatedStoreInformationCommand);
-			
 			
 			injector.mapSingletonOf(IGeocodeService, GeocodeService);
 			injector.mapSingletonOf(IStoreInformationService, StoreInformationService);
+			
 		}
 	}
 }

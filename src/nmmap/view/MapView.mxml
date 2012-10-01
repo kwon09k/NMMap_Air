@@ -19,6 +19,7 @@
 			import com.mapquest.tilemap.TileMapEvent;
 			import com.mapquest.tilemap.controls.inputdevice.*;
 			import com.mapquest.tilemap.controls.shadymeadow.*;
+			import com.mapquest.tilemap.overlays.CircleOverlay;
 			import com.mapquest.tilemap.overlays.RectangleOverlay;
 			import com.mapquest.tilemap.pois.*;
 			
@@ -263,6 +264,8 @@
 					
 					// _childPoi is the shapecollection for the child poi's, add poi's to the shapeCollection
 					_childPoiColl.add(poi);
+					
+					//using this for update the poi color //TODO
 					_storeHash[storeInfo.abbrevCombine] = poi;
 
 					//add pois to the map
@@ -313,7 +316,7 @@
 					masterRect.borderWidth = 2;
 					masterRect.colorAlpha = 1;
 					masterRect.fillColorAlpha = 0.30;
-					masterRect.color = 0x003366;
+					masterRect.color = 0xFFFFFF;//003366;
 					masterRect.fillColor = 0xFFFFFF;
 					masterRect.doubleClickEnabled = true;
 					masterRect.addEventListener(MouseEvent.MOUSE_OUT, rectangleOverlayOutHandler); 
@@ -336,63 +339,63 @@
 							vertices = getVertices("NV");
 							break;
 						case 3:
-							masterRect.key = ("");
+							masterRect.key = ("ArizonaArea");
 							vertices = getVertices("AZ");
 							break;
 						case 4:
-							masterRect.key = ("");
+							masterRect.key = ("GeorgiaArea");
 							vertices = getVertices("GA");
 							break;
 						case 5:
-							masterRect.key = ("");
+							masterRect.key = ("FloidaArea");
 							vertices = getVertices("FL");
 							break;
 						case 6:
-							masterRect.key = ("");
+							masterRect.key = ("IllinoisArea");
 							vertices = getVertices("IL");
 							break;
 						case 7:
-							masterRect.key = ("");
+							masterRect.key = ("MichiganArea");
 							vertices = getVertices("MI");
 							break;
 						case 8:
-							masterRect.key = ("");
+							masterRect.key = ("NorthCarolinaArea");
 							vertices = getVertices("NC");
 							break;
 						case 9:
-							masterRect.key = ("");
+							masterRect.key = ("ColoradoArea");
 							vertices = getVertices("CO");
 							break;
 						case 10:
-							masterRect.key = ("");
-							vertices = getVertices("NY");
+							masterRect.key = ("NewYorkArea");
+							vertices = getVertices("NY","NJ","PA");
 							break;
 						case 11:
-							masterRect.key = ("");
-							vertices = getVertices("NJ");
+							masterRect.key = ("NewJerseyArea");
+//							vertices = getVertices("NJ");
 							break;
 						case 12:
-							masterRect.key = ("");
+							masterRect.key = ("MinnesotaArea");
 							vertices = getVertices("MN");
 							break;
 						case 13:
-							masterRect.key = ("");
+							masterRect.key = ("MassachusettsArea");
 							vertices = getVertices("MA");
 							break;
 						case 14:
-							masterRect.key = ("");
+							masterRect.key = ("MissouriArea");
 							vertices = getVertices("MO");
 							break;
 						case 15:
-							masterRect.key = ("");
-							vertices = getVertices("PA");
+							masterRect.key = ("PennsylvaniaArea");
+//							vertices = getVertices("PA");
 							break;
 						case 16:
-							masterRect.key = ("");
+							masterRect.key = ("WashingtonArea");
 							vertices = getVertices("WA");
 							break;
 						case 17:
-							masterRect.key = ("");
+							masterRect.key = ("DCVirginiaMarylandArea");
 							vertices = getVertices("DC","VA","MD");
 							break;
 //						case 18:
@@ -406,20 +409,20 @@
 						
 					}
 					trace("distance is", vertices[0].arcDistance(vertices[1]));
-					if(vertices[0].arcDistance(vertices[1]) < 50)
+					if(vertices[0].arcDistance(vertices[1]) < 60)
 					{
-						vertices[0].lat += 0.35;
-						vertices[0].lng += 0.35;
+						vertices[0].lat += 1;//0.35;
+						vertices[0].lng += 1;//0.35;
 						
 						if(vertices[1] == null)
 						{
-							vertices[1].lat = vertices[0].lat - 0.35;
-							vertices[1].lng = vertices[0].lng - 0.35;
+							vertices[1].lat = vertices[0].lat - 1;//0.35;
+							vertices[1].lng = vertices[0].lng - 1;//0.35;
 						}
 						else
 						{							
-							vertices[1].lat -= 0.35;
-							vertices[1].lng -= 0.35;
+							vertices[1].lat -= 1;//0.35;
+							vertices[1].lng -= 1;//0.35;
 						}
 					}
 					shapePts.add(vertices[0]);
@@ -523,7 +526,7 @@
 			{
 				event.currentTarget.fillColorAlpha = 0.90;
 			}
-			public function filterPoi():void
+/* 			public function filterPoi():void
 			{
 				var length:int = _childPoiColl.length;
 				var poi:Poi;
@@ -545,7 +548,7 @@
 					}
 				}
 			}
-
+ */
 			public function showRedPoi():void
 			{
 				var length:int = _childPoiColl.length;

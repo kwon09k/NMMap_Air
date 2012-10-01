@@ -13,6 +13,9 @@ package nmmap.vo
 		private var _subBusinessUnitDesc:String;
 		private var _storeName:String;
 		private var _abbrevCombine:String;
+		private var _status:int;
+		
+		
 		private var _street1:String;
 		private var _street2:String;
 		private var _city:String;
@@ -24,7 +27,29 @@ package nmmap.vo
 		private var _latitude:Number;
 		private var _longitude:Number;
 		
+		private var _location:Location;
+		
+		
 
+		public function get status():int
+		{
+			return _status;
+		}
+
+		public function set status(value:int):void
+		{
+			_status = value;
+		}
+
+		public function get location():Location
+		{
+			return _location;
+		}
+
+		public function set location(value:Location):void
+		{
+			_location = value;
+		}
 
 		public function get key():int
 		{
